@@ -1,4 +1,4 @@
-# ![Screenshot](assets/perfect-freehand-logo.svg 'Perfect Freehand')
+# ![Screenshot](assets/perfect-freehand-logo.svg "Perfect Freehand")
 
 Draw perfect pressure-sensitive freehand lines.
 
@@ -7,6 +7,7 @@ Draw perfect pressure-sensitive freehand lines.
 💅 Designer? Check out the [Figma Plugin](https://www.figma.com/community/plugin/950892731860805817).
 
 🕊 This library is written in TypeScript but are community ports in:
+
 - [dart version](https://pub.dev/packages/perfect_freehand)
 - [odin](https://github.com/sibaiper/odin-freehand)
 - [python](https://github.com/bigbluebutton/perfect-freehand-python)
@@ -39,7 +40,7 @@ yarn add perfect-freehand
 
 This package exports a function named `getStroke` that will generate the points for a polygon based on an array of points.
 
-![Screenshot](assets/process.gif 'A GIF showing a stroke with input points, outline points, and a curved path connecting these points')
+![Screenshot](assets/process.gif "A GIF showing a stroke with input points, outline points, and a curved path connecting these points")
 
 To do this work, `getStroke` first creates a set of spline points (red) based on the input points (grey) and then creates outline points (blue). You can render the result any way you like, using whichever technology you prefer.
 
@@ -50,16 +51,16 @@ To do this work, `getStroke` first creates a set of spline points (red) based on
 To use this library, import the `getStroke` function and pass it an array of **input points**, such as those recorded from a user's mouse movement. The `getStroke` function will return a new array of **outline points**. These outline points will form a polygon (called a "stroke") that surrounds the input points.
 
 ```js
-import { getStroke } from 'perfect-freehand'
+import { getStroke } from "perfect-freehand";
 
 const inputPoints = [
   [0, 0],
   [10, 5],
   [20, 8],
   // ...
-]
+];
 
-const outlinePoints = getStroke(inputPoints)
+const outlinePoints = getStroke(inputPoints);
 ```
 
 You then can **render** your stroke points using your technology of choice. See the [Rendering](#rendering) section for examples in SVG and HTML Canvas.
@@ -70,7 +71,7 @@ You can **customize** the appearance of the stroke shape by passing `getStroke` 
 const stroke = getStroke(myPoints, {
   size: 32,
   thinning: 0.7,
-})
+});
 ```
 
 The appearance of a stroke is effected by the **pressure** associated with each input point. By default, the `getStroke` function will simulate pressure based on the distance between input points.
@@ -83,11 +84,11 @@ const inputPoints = [
   [10, 5, 0.7],
   [20, 8, 0.8],
   // ...
-]
+];
 
 const outlinePoints = getStroke(inputPoints, {
   simulatePressure: false,
-})
+});
 ```
 
 In addition to providing points as an array of arrays, you may also provide your points as an **array of objects** as show in the example below. In both cases, the value for pressure is optional (it will default to `.5`).
@@ -98,11 +99,11 @@ const inputPoints = [
   { x: 10, y: 5, pressure: 0.7 },
   { x: 20, y: 8, pressure: 0.8 },
   // ...
-]
+];
 
 const outlinePoints = getStroke(inputPoints, {
   simulatePressure: false,
-})
+});
 ```
 
 **Note:** Internally, the `getStroke` function will convert your object points to array points, which will have an effect on performance. If you're using this library ambitiously and want to format your points as objects, consider modifying this library's `getStrokeOutlinePoints` to use the object syntax instead (e.g. replacing all `[0]` with `.x`, `[1]` with `.y`, and `[2]` with `.pressure`).
@@ -110,21 +111,21 @@ const outlinePoints = getStroke(inputPoints, {
 ## Example
 
 ```jsx
-import * as React from 'react'
-import { getStroke } from 'perfect-freehand'
-import { getSvgPathFromStroke } from './utils'
+import * as React from "react";
+import { getStroke } from "perfect-freehand";
+import { getSvgPathFromStroke } from "./utils";
 
 export default function Example() {
-  const [points, setPoints] = React.useState([])
+  const [points, setPoints] = React.useState([]);
 
   function handlePointerDown(e) {
-    e.target.setPointerCapture(e.pointerId)
-    setPoints([[e.pageX, e.pageY, e.pressure]])
+    e.target.setPointerCapture(e.pointerId);
+    setPoints([[e.pageX, e.pageY, e.pressure]]);
   }
 
   function handlePointerMove(e) {
-    if (e.buttons !== 1) return
-    setPoints([...points, [e.pageX, e.pageY, e.pressure]])
+    if (e.buttons !== 1) return;
+    setPoints([...points, [e.pageX, e.pageY, e.pressure]]);
   }
 
   const stroke = getStroke(points, {
@@ -132,19 +133,19 @@ export default function Example() {
     thinning: 0.5,
     smoothing: 0.5,
     streamline: 0.5,
-  })
+  });
 
-  const pathData = getSvgPathFromStroke(stroke)
+  const pathData = getSvgPathFromStroke(stroke);
 
   return (
     <svg
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: "none" }}
     >
       {points && <path d={pathData} />}
     </svg>
-  )
+  );
 }
 ```
 
@@ -201,7 +202,7 @@ getStroke(myPoints, {
     taper: 0,
     easing: (t) => t,
   },
-})
+});
 ```
 
 > **Tip:** To create a stroke with a steady line, set the `thinning` option to `0`.
@@ -243,13 +244,13 @@ const outlinePoints = getStrokeOutlinePoints(strokePoints)
 A TypeScript type for the options object. Useful if you're defining your options outside of the `getStroke` function.
 
 ```ts
-import { StrokeOptions, getStroke } from 'perfect-freehand'
+import { StrokeOptions, getStroke } from "perfect-freehand";
 
 const options: StrokeOptions = {
   size: 16,
-}
+};
 
-const stroke = getStroke(options)
+const stroke = getStroke(options);
 ```
 
 ## Tips & Tricks
@@ -267,48 +268,48 @@ While `getStroke` returns an array of points representing the outline of a strok
 The function below will turn the points returned by `getStroke` into SVG path data.
 
 ```js
-const average = (a, b) => (a + b) / 2
+const average = (a, b) => (a + b) / 2;
 
 function getSvgPathFromStroke(points, closed = true) {
-  const len = points.length
+  const len = points.length;
 
   if (len < 4) {
-    return ``
+    return ``;
   }
 
-  let a = points[0]
-  let b = points[1]
-  const c = points[2]
+  let a = points[0];
+  let b = points[1];
+  const c = points[2];
 
   let result = `M${a[0].toFixed(2)},${a[1].toFixed(2)} Q${b[0].toFixed(
-    2
+    2,
   )},${b[1].toFixed(2)} ${average(b[0], c[0]).toFixed(2)},${average(
     b[1],
-    c[1]
-  ).toFixed(2)} T`
+    c[1],
+  ).toFixed(2)} T`;
 
   for (let i = 2, max = len - 1; i < max; i++) {
-    a = points[i]
-    b = points[i + 1]
+    a = points[i];
+    b = points[i + 1];
     result += `${average(a[0], b[0]).toFixed(2)},${average(a[1], b[1]).toFixed(
-      2
-    )} `
+      2,
+    )} `;
   }
 
   if (closed) {
-    result += 'Z'
+    result += "Z";
   }
 
-  return result
+  return result;
 }
 ```
 
 To use this function, first run your input points through `getStroke`, then pass the result to `getSvgPathFromStroke`.
 
 ```js
-const outlinePoints = getStroke(inputPoints)
+const outlinePoints = getStroke(inputPoints);
 
-const pathData = getSvgPathFromStroke(outlinePoints)
+const pathData = getSvgPathFromStroke(outlinePoints);
 ```
 
 You could then pass this string of SVG path data either to an [SVG path](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) element:
@@ -320,9 +321,9 @@ You could then pass this string of SVG path data either to an [SVG path](https:/
 Or, if you are rendering with HTML Canvas, you can pass the string to a [`Path2D` constructor](https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D#using_svg_paths)).
 
 ```js
-const myPath = new Path2D(pathData)
+const myPath = new Path2D(pathData);
 
-ctx.fill(myPath)
+ctx.fill(myPath);
 ```
 
 ### Flattening
@@ -330,20 +331,20 @@ ctx.fill(myPath)
 By default, the polygon's paths include self-crossings. You may wish to remove these crossings and render a stroke as a "flattened" polygon. To do this, install the [`polygon-clipping`](https://github.com/mfogel/polygon-clipping) package and use the following function together with the `getSvgPathFromStroke`.
 
 ```js
-import polygonClipping from 'polygon-clipping'
+import polygonClipping from "polygon-clipping";
 
 function getFlatSvgPathFromStroke(stroke) {
-  const faces = polygonClipping.union([stroke])
+  const faces = polygonClipping.union([stroke]);
 
-  const d = []
+  const d = [];
 
   faces.forEach((face) =>
     face.forEach((points) => {
-      d.push(getSvgPathFromStroke(points))
-    })
-  )
+      d.push(getSvgPathFromStroke(points));
+    }),
+  );
 
-  return d.join(' ')
+  return d.join(" ");
 }
 ```
 
